@@ -37,81 +37,39 @@ $showSidebar = $hasSidebar && ($ACT=='show');
 
 <?php echo tpl_js('layout.js'); ?>
 
-<script type="text/javascript">
-jQuery(function ()
-{
-    jQuery('#container').layout({
-        maskContents: true,
-        center: {
-            applyDefaultStyles: true
-        },
-        west: {
-            applyDefaultStyles: true,
-            minSize: 300
-        }
-    });
-
-    jQuery('.ui-layout-pane').each(function () {
-        var el = jQuery(this);
-    });
-
-    jQuery(".codo_side_content [href]").each(function () {
-        if (this.href == window.location.href) {
-            jQuery(this).addClass("codo_active");
-        }
-    });
-
-    function apply_space(elem, times) {
-
-        jQuery(elem).find(">li>div>a").each(function()
-        {
-            jQuery(this).html(times + jQuery(this).html())
-
-        });
-
-        jQuery(elem).find(">li>ul").each(function()
-        {
-            apply_space(jQuery(this), times + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
-        });
-
-    }
-
-    apply_space(jQuery('.codo_side_content >ul'), '&nbsp;');
-
-});
-
-</script>
-
 </head>
+
 <body>
-<div id="container">
-    <div class="ui-layout-center">
-        
-        <div id="dokuwiki__site"><div id="dokuwiki__top" class="site <?php echo tpl_classes(); ?>">
+    
+     <div id="container">
+            <div class="ui-layout-center">
+    
+    <!--[if lte IE 7 ]><div id="IE7"><![endif]--><!--[if IE 8 ]><div id="IE8"><![endif]-->
+    <div id="dokuwiki__site"><div id="dokuwiki__top" class="site <?php echo tpl_classes(); ?> <?php
+        /*echo ($showSidebar) ? 'showSidebar' : '';*/ ?> <?php /* echo ($hasSidebar) ? 'hasSidebar' : '';*/ ?>">
 
         <?php include('tpl_header.php') ?>
 
         <div class="wrapper group">
 
+
+
+            <!-- ********** CONTENT ********** -->
             <div id="dokuwiki__content"><div class="pad group">
 
-            <!--<div class="pageId"><span><?php echo hsc($ID) ?></span></div>-->
+                <!--<div class="pageId"><span><?php echo hsc($ID) ?></span></div>-->
 
-            <div class="page group">
+                <div class="page group">
+                    <?php tpl_flush() ?>
+                    <?php tpl_includeFile('pageheader.html') ?>
+                    <!-- wikipage start -->
+                    <?php tpl_content() ?>
+                    <!-- wikipage stop -->
+                    <?php tpl_includeFile('pagefooter.html') ?>
+                </div>
+
                 <?php tpl_flush() ?>
-                <?php tpl_includeFile('pageheader.html') ?>
-                <!-- wikipage start -->
-                <?php tpl_content() ?>
-                <!-- wikipage stop -->
-                <?php tpl_includeFile('pagefooter.html') ?>
-            </div>
-
-            <div class="docInfo">
-                <?php # tpl_pageinfo() ?>
-            </div>
-
-            <?php tpl_flush() ?>
-            </div></div><!-- dokuwiki__content -->
+            </div></div><!-- /content -->
 
             <hr class="a11y" />
 
@@ -119,95 +77,108 @@ jQuery(function ()
             <div id="dokuwiki__pagetools">
                 <h3 class="a11y"><?php echo $lang['page_tools']; ?></h3>
                 <div class="tools">
-                <ul>
-                <?php
-                $data = array(
-                'view'  => 'main',
-                'items' => array(
-                'edit'      => tpl_action('edit',      1, 'li', 1, '<span>', '</span>'),
-                'revert'    => tpl_action('revert',    1, 'li', 1, '<span>', '</span>'),
-                'revisions' => tpl_action('revisions', 1, 'li', 1, '<span>', '</span>'),
-                'backlink'  => tpl_action('backlink',  1, 'li', 1, '<span>', '</span>'),
-                'subscribe' => tpl_action('subscribe', 1, 'li', 1, '<span>', '</span>'),
-                'top'       => tpl_action('top',       1, 'li', 1, '<span>', '</span>')
-                )
-                );
+                    <ul>
+                        <?php
+                            $data = array(
+                                'view'  => 'main',
+                                'items' => array(
+                                    'edit'      => tpl_action('edit',      1, 'li', 1, '<span>', '</span>'),
+                                    'revert'    => tpl_action('revert',    1, 'li', 1, '<span>', '</span>'),
+                                    'revisions' => tpl_action('revisions', 1, 'li', 1, '<span>', '</span>'),
+                                    'backlink'  => tpl_action('backlink',  1, 'li', 1, '<span>', '</span>'),
+                                    'subscribe' => tpl_action('subscribe', 1, 'li', 1, '<span>', '</span>'),
+                                    'top'       => tpl_action('top',       1, 'li', 1, '<span>', '</span>')
+                                )
+                            );
 
-                // the page tools can be amended through a custom plugin hook
-                $evt = new Doku_Event('TEMPLATE_PAGETOOLS_DISPLAY', $data);
-                if($evt->advise_before()){
-                foreach($evt->data['items'] as $k => $html) echo $html;
-                }
-                $evt->advise_after();
-                unset($data);
-                unset($evt);
-                ?>
-                </ul>
+                            // the page tools can be amended through a custom plugin hook
+                            $evt = new Doku_Event('TEMPLATE_PAGETOOLS_DISPLAY', $data);
+                            if($evt->advise_before()){
+                                foreach($evt->data['items'] as $k => $html) echo $html;
+                            }
+                            $evt->advise_after();
+                            unset($data);
+                            unset($evt);
+                        ?>
+                    </ul>
                 </div>
-            </div><!-- dokuwiki__pagetools -->
+            </div>
         </div><!-- /wrapper -->
 
-        <?php //include('tpl_footer.php') ?>
-        </div></div><!-- /site -->
+        <?php include('tpl_footer.php') ?>
+    </div></div><!-- /site -->
 
-        <div class="no"><?php tpl_indexerWebBug() /* provide DokuWiki housekeeping, required in all templates */ ?></div>
-        <div id="screen__mode" class="no"></div><?php /* helper to detect CSS media query in script.js */ ?>
-        <!--[if ( lte IE 7 | IE 8 ) ]></div><![endif]-->
-    </div><!-- ui-layout-center -->
+    <div class="no"><?php tpl_indexerWebBug() /* provide DokuWiki housekeeping, required in all templates */ ?></div>
+    <div id="screen__mode" class="no"></div><?php /* helper to detect CSS media query in script.js */ ?>
+    <!--[if ( lte IE 7 | IE 8 ) ]></div><![endif]-->
+    
+    </div>
 
-    <div class="ui-layout-west codowiki_west">
-        <div class='codowiki_west_header'>
-
+            <div class="ui-layout-west codowiki_west">
+            
+            
+            <div class='codowiki_west_header'>
             <div class="headings group">
-                <ul class="a11y skip">
-                    <li><a href="#dokuwiki__content"><?php echo $lang['skip_to_content']; ?></a></li>
-                </ul>
+        <ul class="a11y skip">
+            <li><a href="#dokuwiki__content"><?php echo $lang['skip_to_content']; ?></a></li>
+        </ul>
 
-                <h1><?php
-                // get logo either out of the template images folder or data/media folder
-                $logoSize = array();
-                $logo = tpl_getMediaFile(array(':wiki:logo.png', ':logo.png', 'images/codo_logo_s.png'), false, $logoSize);
+        <h1><?php
+            // get logo either out of the template images folder or data/media folder
+            $logoSize = array();
+            $logo = tpl_getMediaFile(array(':wiki:logo.png', ':logo.png', 'images/codo_logo_s.png'), false, $logoSize);
 
-                // display logo and wiki title in a link to the home page
-                tpl_link(
+            // display logo and wiki title in a link to the home page
+            tpl_link(
                 wl(),
                 '<img src="'.$logo.'" '.$logoSize[3].' alt="" /> <span>'.$conf['title'].'</span>',
                 'accesskey="h" title="[H]"'
-                );
-                ?></h1>
-
-                <?php if ($conf['tagline']): ?>
-                <p class="claim"><?php echo $conf['tagline']; ?></p>
-                <?php endif ?>
-            </div>
-
-            <div id="dokuwiki__sitetools">
-                <h3 class="a11y"><?php echo $lang['site_tools']; ?></h3>
-                <?php tpl_searchform(); ?>
-                <!--<div class="mobileTools">
+            );
+        ?></h1>
+        <?php if ($conf['tagline']): ?>
+            <p class="claim"><?php echo $conf['tagline']; ?></p>
+        <?php endif ?>
+    </div>
+            
+            
+            
+        <div id="dokuwiki__sitetools">
+            <h3 class="a11y"><?php echo $lang['site_tools']; ?></h3>
+            <?php tpl_searchform(); ?>
+            <!--<div class="mobileTools">
                 <?php tpl_actiondropdown($lang['tools']); ?>
-                </div>-->
-                <ul id="codowiki_search_ul">
+            </div>-->
+            <ul id="codowiki_search_ul">
                 <?php
-                tpl_action('recent', 1, 'li');
-                tpl_action('media', 1, 'li');
-                tpl_action('index', 1, 'li');
+                    tpl_action('recent', 1, 'li');
+                    tpl_action('media', 1, 'li');
+                    tpl_action('index', 1, 'li');
                 ?>
-                </ul>
+            </ul>
+        </div>
+            
             </div>
-        </div>
-
-        <?php if($showSidebar): ?>
-        <!-- ********** ASIDE ********** -->
-        <div class="codo_side_content">
-        <?php tpl_flush() ?>
-        <?php tpl_includeFile('sidebarheader.html') ?>
-        <?php tpl_include_page($conf['sidebar'], 1, 1) ?>
-        <?php tpl_includeFile('sidebarfooter.html') ?>
-        </div>
-
-        <?php endif; ?>
-    </div><!-- ui-layout-west codowiki_west -->
-</div><!-- container -->
+            
+            
+            
+                <?php if($showSidebar): ?>
+                <!-- ********** ASIDE ********** -->
+                    <div class="codo_side_content">
+                        <?php tpl_flush() ?>
+                        <?php tpl_includeFile('sidebarheader.html') ?>
+                        <?php tpl_include_page($conf['sidebar'], 1, 1) ?>
+                        <?php tpl_includeFile('sidebarfooter.html') ?>
+                    </div>
+                
+            <?php endif; ?>
+            
+            <!--below div is end WEST pane-->
+            </div>
+    
+   
+    <!--below div is end content-->
+    </div>
+    
+      <?php #include('tpl_footer.php') ?>
 </body>
 </html>

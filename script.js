@@ -76,4 +76,45 @@ jQuery(function(){
         var $content = jQuery('#dokuwiki__content div.page');
         $content.css('min-height', $sidebar.height());
     }
+
+    // 
+    // added
+    // 
+    jQuery('#container').layout({
+        maskContents: true,
+        center: {
+            applyDefaultStyles: true
+        },
+        west: {
+            applyDefaultStyles: true,
+            minSize: 300
+        }
+    });
+
+    jQuery('.ui-layout-pane').each(function () {
+        var el = jQuery(this);
+    });
+
+    jQuery(".codo_side_content [href]").each(function () {
+        if (this.href == window.location.href) {
+            jQuery(this).addClass("codo_active");
+        }
+    });
+
+    function apply_space(elem, times) {
+
+        jQuery(elem).find(">li>div>a").each(function()
+        {
+            jQuery(this).html(times + jQuery(this).html())
+
+        });
+
+        jQuery(elem).find(">li>ul").each(function()
+        {
+            apply_space(jQuery(this), times + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
+        });
+
+    }
+
+    apply_space(jQuery('.codo_side_content >ul'), '&nbsp;');
 });

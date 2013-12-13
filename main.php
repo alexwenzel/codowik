@@ -37,51 +37,6 @@ $showSidebar = $hasSidebar && ($ACT=='show');
 
 <?php echo tpl_js('layout.js'); ?>
 
-<script type="text/javascript">
-jQuery(function ()
-{
-    jQuery('#container').layout({
-        maskContents: true,
-        center: {
-            applyDefaultStyles: true
-        },
-        west: {
-            applyDefaultStyles: true,
-            minSize: 300
-        }
-    });
-
-    jQuery('.ui-layout-pane').each(function () {
-        var el = jQuery(this);
-    });
-
-    jQuery(".codo_side_content [href]").each(function () {
-        if (this.href == window.location.href) {
-            jQuery(this).addClass("codo_active");
-        }
-    });
-
-    function apply_space(elem, times) {
-
-        jQuery(elem).find(">li>div>a").each(function()
-        {
-            jQuery(this).html(times + jQuery(this).html())
-
-        });
-
-        jQuery(elem).find(">li>ul").each(function()
-        {
-            apply_space(jQuery(this), times + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
-        });
-
-    }
-
-    apply_space(jQuery('.codo_side_content >ul'), '&nbsp;');
-
-});
-
-</script>
-
 </head>
 
 <body>
@@ -152,7 +107,7 @@ jQuery(function ()
             </div>
         </div><!-- /wrapper -->
 
-        <?php //include('tpl_footer.php') ?>
+        <?php include('tpl_footer.php') ?>
     </div></div><!-- /site -->
 
     <div class="no"><?php tpl_indexerWebBug() /* provide DokuWiki housekeeping, required in all templates */ ?></div>
@@ -226,6 +181,6 @@ jQuery(function ()
     <!--below div is end content-->
     </div>
     
-      <?php // include('tpl_footer.php') ?>
+      <?php #include('tpl_footer.php') ?>
 </body>
 </html>
